@@ -1,0 +1,66 @@
+﻿@model IEnumerable<StudentDormitoryApp.Domain.DomainModels.Room>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .room-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 80px);
+        gap: 5px;
+    }
+
+    .room-card {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        font-weight: bold;
+        text-decoration: none;
+        color: white;
+        text-align: center;
+        transition: transform 0.15s;
+    }
+
+        .room-card:hover {
+            transform: scale(1.05);
+        }
+</style>
+
+<h3>Преглед на соби</h3>
+
+@* <p>
+    <a asp-action="Create">Create New</a>
+</p> *@
+
+
+<div class="room-grid">
+    @foreach (var room in Model)
+    {
+        string color = "";
+
+        if (room.OccupiedBeds == 0)
+        {
+            color = "#198754";
+        }
+        else if (room.OccupiedBeds == room.BedCount)
+        {
+            color = "red";
+        }
+        else
+        {
+            color = "yellow";
+        }
+
+        <a asp-action="Details" asp-route-id="@room.Id"
+           class="room-card"
+           style="background-color:@color">
+            @room.Name
+        </a>
+    }
+</div>

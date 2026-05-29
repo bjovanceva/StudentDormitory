@@ -1,0 +1,76 @@
+﻿@model IEnumerable<StudentDormitoryApp.Domain.DomainModels.Application>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+@* <p>
+    <a asp-action="Create">Create New</a>
+</p> *@
+<div>
+    <a asp-action="ListWithStatusPending">Непрегледани апликации</a>
+    <a asp-action="ListWithStatusApproved">Прегледани апликации</a>
+    <div>
+        <form method="get" asp-action="GetByMONId">
+        <p>Пребарај според MON идентификатор</p>
+        <input name="search"/>
+
+          
+            <div class="form-group">
+                <input type="submit" value="Пребарај" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Room)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentDormitoryAppUserId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Room.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentDormitoryAppUserId)
+            </td>
+            <td>
+                @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">Прегледај</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

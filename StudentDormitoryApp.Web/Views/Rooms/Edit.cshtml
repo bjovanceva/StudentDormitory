@@ -1,0 +1,117 @@
+﻿@model StudentDormitoryApp.Domain.DomainModels.Room
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Room</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StudentDormitory" class="control-label"></label>
+                <input type="hidden" asp-for="StudentDormitoryId" />
+                @* <input disabled class="form-control" value="StudentDormitory.Name" /> *@
+                <input value="@Model.StudentDormitory?.Name" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuildingSection" class="control-label"></label>
+                <input asp-for="BuildingSection" class="form-control" />
+                <span asp-validation-for="BuildingSection" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsDuplex" /> @Html.DisplayNameFor(model => model.IsDuplex)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HasPrivateBathroom" /> @Html.DisplayNameFor(model => model.HasPrivateBathroom)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HasKitchen" /> @Html.DisplayNameFor(model => model.HasKitchen)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="BedCount" class="control-label"></label>
+                <input asp-for="BedCount" class="form-control" />
+                <span asp-validation-for="BedCount" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+                <label asp-for="OccupiedBeds" class="control-label"></label>
+                <input asp-for="OccupiedBeds" class="form-control" />
+                <span asp-validation-for="OccupiedBeds" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="Orientation" class="control-label"></label>
+                <select asp-for="Orientation" class="form-control" asp-items="ViewBag.Orientations">
+                    <option value="">-- Select room orientation --</option>
+                </select>
+                <span asp-validation-for="Orientation" class="text-danger"></span>
+            </div>
+
+            <label class="control-label">Images</label>
+            <input type="file" id="imageInput" name="Images" multiple class="form-control" />
+
+            <div id="previewContainer" class="mt-3"></div>
+            <input type="hidden" asp-for="Id" />
+			<div class="form-group">
+				<a href="c:\users\user\integrirani_sistemi\studentdormitoryapp\studentdormitoryapp.web\views\rooms\edit.cshtml">c:\users\user\integrirani_sistemi\studentdormitoryapp\studentdormitoryapp.web\views\rooms\edit.cshtml</a>
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+    document.getElementById("imageInput").addEventListener("change", function(event) {
+
+        const previewContainer = document.getElementById("previewContainer");
+        previewContainer.innerHTML = "";
+
+        const files = event.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+
+            const file = files[i];
+
+            if (file.type.startsWith("image/")) {
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.style.width = "150px";
+                    img.style.margin = "10px";
+                    // img.style.borderRadius = "8px";
+
+                    previewContainer.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

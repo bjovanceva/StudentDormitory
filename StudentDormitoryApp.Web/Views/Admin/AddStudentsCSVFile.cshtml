@@ -1,0 +1,29 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@{
+    ViewData["Title"] = "Upload Students CSV";
+}
+
+<h2>Upload Students CSV File</h2>
+
+<form asp-action="AddStudentsCSVFile" asp-controller="Admin" method="post" enctype="multipart/form-data">
+<div>
+<label for="csvFile">Select CSV File</label>
+<input type="file" name="csvFile" id="csvFile" class="form-control" accept=".csv" 
+               required/>
+</div>
+ <br />
+ <button type="submit" class="btn btn-primary"> Upload </button>
+
+</form>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success mt-3">
+        @TempData["Message"]
+    </div>
+}

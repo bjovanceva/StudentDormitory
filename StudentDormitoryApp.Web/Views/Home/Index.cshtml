@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+<style>
+    body{
+        /* margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: url('https://www.kaizenams.com/wp-content/uploads/2021/10/building-maintenance-scaled.jpeg') no-repeat center bottom;
+        background-size: cover; */
+        background-color: #fffdf5;
+        font-family: Arial, sans-serif;
+    }
+</style>
+
+<body>
+<div class="container text-center">
+        <div class="mb-5">
+            <h1 class="display-6 fw-bold text-dark" style="font-family: 'Playfair Display', serif;">Добредојдовте во системот за студентски домови</h1>
+            <p class="fs-5" style="font-family: 'Bangers', cursive; font-size: 3rem; color: black;">Лесно и брзо управувајте со процесот на добивање на соба во вашиот избран студентски дом</p>
+            <div class="mt-4">
+                <a asp-action="Index" asp-controller="StudentDormitories" class="btn btn-success btn-lg" style="color: white; font-family: 'Playfair Display', serif; margin-bottom: 20px">
+                    Започни го процесот
+                </a>
+            </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 text-center">
+                <img src="https://images.adsttc.com/media/images/60c3/a73d/a8ac/3901/64cf/ab26/newsletter/student-dorm-ivan-dorotic-2.jpg?1623435085" class="card-img-top" style="width: 405px; height: 250px" alt="Поддршка во процесот">
+                <div class="card-body">
+                        <h5 class="card-title" style="font-family: 'Playfair Display', serif;">Поддршка во процесот</h5>
+                    <p class="card-text">Апликацијата ви помага да го следите и завршите процесот за добивање на соба без стрес и грешки.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 text-center align-items-center">
+                    <img src="https://www.oejhv.at/wp-content/uploads/1200-Wien-Brigittenau-Speisesaal2.jpg" class="card-img-top" style="width: 405px; height: 250px" alt="Следење на статус">
+                <div class="card-body">
+                        <h5 class="card-title" style="font-family: 'Playfair Display', serif;">Следење на статус</h5>
+                    <p class="card-text">Можете да ја видите состојбата на вашата апликација и да добиете потврда кога вашата соба е доделена.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 text-center">
+                <img src="https://ndy.com/wp-content/uploads/2012/03/Monash-New7_lr-e1463122159611.jpg" class="card-img-top" style="width: 405px; height: 250px" alt="Преглед на достапни домови">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-family: 'Playfair Display', serif;">Преглед на достапни домови</h5>
+                    <p class="card-text">Апликацијата нуди информации за студентските домови и помага при изборот на веќе одобрен дом.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+    <div class="mt-5" style="background-color: lightgoldenrodyellow">
+            <p class="text-black-50 fs-5">Нашиот систем го олеснува целиот процес на распределба на соби за студентите, обезбедувајќи брзина, јасност и конзистентност со правилата на домот.</p>
+    </div>
+</div>
+</body>

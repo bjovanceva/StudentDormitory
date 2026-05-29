@@ -1,0 +1,84 @@
+﻿@model StudentDormitoryApp.Domain.DomainModels.Application
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Application</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @* <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" class="form-control"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div> *@
+            @* <div class="form-group">
+                <label asp-for="ApplicationDate" class="control-label"></label>
+                <input disabled asp-for="ApplicationDate" class="form-control" />
+                <span asp-validation-for="ApplicationDate" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="RoomId" class="control-label"></label>
+                <input hidden asp-for="RoomId" class ="form-control" asp-items="ViewBag.RoomId"></input>
+                <input disabled class ="form-control" value="@ViewBag.RoomName">
+            </div>
+            <div>
+                <label>Student Dormitory</label>
+                <input disabled class="form-control" value="@ViewBag.StudentDormitoryName">
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentDormitoryAppUserId" class="control-label"></label>
+                <input hidden asp-for="StudentDormitoryAppUserId" class="form-control" value="@ViewBag.UserId"/>
+                <input disabled value="@ViewBag.UserEmail" class="form-control" />
+                <span asp-validation-for="StudentDormitoryAppUserId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Comment" class="control-label">Comment</label>
+                <input asp-for="Comment" class="form-control" />
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            </div>
+
+             <label class="control-label">Documents</label>
+            <input type="file" id="documentInput" name="Documents" multiple class="form-control" />
+            
+            <div id="previewContainer" class="mt-3"></div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+        document.getElementById("documentInput").addEventListener("change", function(event) {
+        const previewContainer = document.getElementById("previewContainer");
+        previewContainer.innerHTML = "";
+        const files = event.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            const fileItem = document.createElement("div");
+            fileItem.textContent = "📄 " + file.name;
+            fileItem.style.margin = "5px 0";
+
+            previewContainer.appendChild(fileItem);
+        }
+    });
+</script>
