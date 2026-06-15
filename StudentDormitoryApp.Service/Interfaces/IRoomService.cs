@@ -16,5 +16,7 @@ namespace StudentDormitoryApp.Service.Interfaces
         Room DeleteById(Guid id);
 
         List<Room> GetAllByStudentDormitoryId(Guid studentDormitoryId);
+
+        bool isAvailable(Guid id);
     }
 }

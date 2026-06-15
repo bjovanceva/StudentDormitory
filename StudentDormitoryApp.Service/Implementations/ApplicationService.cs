@@ -68,7 +68,7 @@ namespace StudentDormitoryApp.Service.Implementations
 
         public Application? GetById(Guid id)
         {
-            return _applicationRepository.Get(selector: x => x, predicate: x => x.Id.Equals(id), include: x => x.Include(y => y.Room).ThenInclude(z => z.StudentDormitory));
+            return _applicationRepository.Get(selector: x => x, predicate: x => x.Id.Equals(id), include: x => x.Include(y => y.Room).ThenInclude(z => z.StudentDormitory).Include(y => y.Documents));
         }
 
         public Application DeleteById(Guid id)
@@ -79,17 +79,17 @@ namespace StudentDormitoryApp.Service.Implementations
 
         public List<Application> GetAll()
         {
-            return _applicationRepository.GetAll(selector: x => x).ToList();
+            return _applicationRepository.GetAll(selector: x => x, include: x => x.Include(y => y.Room).ThenInclude(z => z.StudentDormitory).Include(y => y.StudentDormitoryAppUser)).ToList();
         }
 
         public List<Application> GetAllWithStatusPending()
         {
-            return _applicationRepository.GetAll(selector: x => x, predicate: x => x.Status.Equals(ApplicationStatus.Pending)).OrderBy(a => a.ApplicationDate).ToList();
+            return _applicationRepository.GetAll(selector: x => x, predicate: x => x.Status.Equals(ApplicationStatus.Pending), include: x => x.Include(y => y.Room).ThenInclude(z => z.StudentDormitory).Include(y => y.StudentDormitoryAppUser)).OrderBy(a => a.ApplicationDate).ToList();
         }
 
         public List<Application> GetAllWithStatusApproved()
         {
-            return _applicationRepository.GetAll(selector: x => x, predicate: x => x.Status.Equals(ApplicationStatus.Approved)).OrderBy(a => a.ApplicationDate).ToList();
+            return _applicationRepository.GetAll(selector: x => x, predicate: x => x.Status.Equals(ApplicationStatus.Approved), include: x => x.Include(y => y.Room).ThenInclude(z => z.StudentDormitory).Include(y => y.StudentDormitoryAppUser)).OrderBy(a => a.ApplicationDate).ToList();
         }
 
         public async Task<Application> GetByMONApplicationId(String monApplicationId)
@@ -99,7 +99,7 @@ namespace StudentDormitoryApp.Service.Implementations
             {
                return null;
             }
-            var app = _applicationRepository.Get(selector: x => x, predicate: x => x.StudentDormitoryAppUserId.Equals(Guid.Parse(user.Id)));
+            var app = _applicationRepository.Get(selector: x => x, predicate: x => x.StudentDormitoryAppUserId.Equals(Guid.Parse(user.Id)), include: x => x.Include(y => y.Room).ThenInclude(z => z.StudentDormitory).Include(y => y.StudentDormitoryAppUser));
             return app; 
         }
 
@@ -120,7 +120,32 @@ namespace StudentDormitoryApp.Service.Implementations
             };
 
             await _emailService.SendEmailAsync(emailMessage);
+
+            var room = _roomService.GetById(application.RoomId);
+            room.OccupiedBeds += 1;
+            _roomService.Update(room);
         
+            return application;
+        }
+
+        public async Task<Application> RejectApplication(Guid id, string comment)
+        {
+            var application = GetById(id);
+            application.Status = ApplicationStatus.Rejected;
+            _applicationRepository.Update(application);
+
+            var user = await _userManager.FindByIdAsync(application.StudentDormitoryAppUserId.ToString());
+
+
+            var emailMessage = new EmailMessage
+            {
+                MailTo = user.Email,
+                Subject = "Информација за статус на поднесената апликација",
+                Content = comment
+            };
+
+            await _emailService.SendEmailAsync(emailMessage);
+
             return application;
         }
     }

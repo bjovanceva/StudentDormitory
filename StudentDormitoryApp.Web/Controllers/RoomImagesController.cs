@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentDormitoryApp.Domain.DomainModels;
 using StudentDormitoryApp.Repository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace StudentDormitoryApp.Web.Controllers
 {
@@ -20,6 +21,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: RoomImages
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.RoomImages.Include(r => r.Room);
@@ -27,6 +29,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: RoomImages/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -46,6 +49,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: RoomImages/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id");
@@ -57,6 +61,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("ImageUrl,RoomId,Id")] RoomImage roomImage)
         {
             if (ModelState.IsValid)
@@ -71,6 +76,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: RoomImages/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -92,6 +98,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(Guid id, [Bind("ImageUrl,RoomId,Id")] RoomImage roomImage)
         {
             if (id != roomImage.Id)
@@ -124,6 +131,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: RoomImages/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -145,6 +153,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // POST: RoomImages/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var roomImage = await _context.RoomImages.FindAsync(id);

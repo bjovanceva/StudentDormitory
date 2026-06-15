@@ -19,5 +19,6 @@ namespace StudentDormitoryApp.Service.Interfaces
         Task<Application> GetByMONApplicationId(String monApplicationId);
         Application DeleteById(Guid id);
         Task<Application> ApproveApplication(Guid id, string comment);
+        Task<Application> RejectApplication(Guid id, string comment);
     }
 }

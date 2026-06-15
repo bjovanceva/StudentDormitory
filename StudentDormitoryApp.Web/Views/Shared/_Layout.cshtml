@@ -35,29 +35,49 @@
                             </a>
                         </li>
 
+                        @if (User.IsInRole("Student"))
+                        {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="StudentDormitories" asp-action="Index">
                                 Студентски домови
                             </a>
                         </li>
+                        }
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Applications" asp-action="Index">
-                                Апликации
-                            </a>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="StudentDormitories" asp-action="Create">
+                                    Додади студентски дом
+                                </a>
+                            </li>
+                        }
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Admin" asp-action="AddStudentsCSVFile">
-                                Додади студенти
-                            </a>
-                        </li>
+                        @if (User.IsInRole("Referent"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Applications" asp-action="Index">
+                                    Апликации
+                                </a>
+                            </li>
+                        }
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Admin" asp-action="RegisterReferentUser">
-                                Регистрирај референт
-                            </a>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="AddStudentsCSVFile">
+                                    Додади студенти
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="RegisterReferentUser">
+                                    Регистрирај референт
+                                </a>
+                            </li>
+                        }
 
                     </ul>
 

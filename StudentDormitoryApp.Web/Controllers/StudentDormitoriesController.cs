@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentDormitoryApp.Domain.DomainModels;
@@ -8,6 +9,7 @@ using StudentDormitoryApp.Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -25,12 +27,14 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: StudentDormitories
+        [Authorize]
         public IActionResult Index()
         {
             return View(_studentDormitoryService.GetAll());
         }
 
         // GET: StudentDormitories/Details/5
+        [Authorize]
         public IActionResult Details(Guid? id)
         {
             if (id == null)
@@ -48,6 +52,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: StudentDormitories/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -58,6 +63,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Name,Photo,Address,RoomCount,BedCount,HasReadingRoom,HasCafeteria,RentPerMonth,FirstMonthRent,Id")] StudentDormitory studentDormitory, List<IFormFile>? Documents)
         {
             if (ModelState.IsValid)
@@ -92,6 +98,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: StudentDormitories/Edit/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -112,6 +119,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Name,Photo,Address,RoomCount,BedCount,HasReadingRoom,HasCafeteria,RentPerMonth,FirstMonthRent,Id")] StudentDormitory studentDormitory, List<IFormFile>? Documents)
         {
             if (id != studentDormitory.Id)
@@ -164,6 +172,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: StudentDormitories/Delete/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -183,6 +192,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // POST: StudentDormitories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteConfirmed(Guid id)
         {
 

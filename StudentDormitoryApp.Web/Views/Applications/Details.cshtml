@@ -5,26 +5,30 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+@{
+    bool isAvailable = TempData["IsAvailable"] != null
+        && (bool)TempData["IsAvailable"];
+}
+
+<h1>Детали за апликација</h1>
 
 <div>
-    <h4>Application</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
+            Статус
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Status)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Comment)
+            Коментар
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Comment)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ApplicationDate)
+            Дата на апликација
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ApplicationDate)
@@ -32,31 +36,58 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Room)
         </dt>
+        <div class="d-flex">
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Room.Id)
+            @Html.DisplayFor(model => model.Room.Name)
         </dd>
+
+        <button class="btn @(isAvailable ? "btn-success" : "btn-danger")" type="button">
+            @(isAvailable ? "Собата е достапна" : "Собата не е достапна")
+        </button>
+        </div>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StudentDormitoryAppUserId)
+            Студент
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.StudentDormitoryAppUserId)
         </dd>
+        <p>
+            <b>Документи</b></p0>
+        @if (Model.Documents != null && Model.Documents.Any())
+        {
+            <ul>
+                @foreach (var doc in Model.Documents)
+                {
+                    <li>
+                        <a href="@doc.FilePath" download="@doc.Name">
+                            📄 @(doc.Name ?? System.IO.Path.GetFileName(doc.FilePath))
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Нема прикачени документи</p>
+        }
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
     @* <a asp-action="ApproveApplication" asp-route-id="@Model?.Id" class="btn btn-success">Прифати</a> *@
-    <form asp-action="ApproveApplication" method="post">
+    <form asp-action="HandleApplication" method="post">
         <input type="hidden" name="id" value="@Model?.Id" />
 
         <div class="form-group">
-            <label asp-for="Comment" class="control-label">Comment</label>
+            <label asp-for="Comment" class="control-label">Коментар</label>
             <input asp-for="Comment" class="form-control" />
             <span asp-validation-for="Comment" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-success">Прифати</button>
+        <button type="submit" name="action" value="approve" class="btn btn-success">Прифати</button>
+        <button type="submit" name="action" value="reject" class="btn btn-danger">
+            Одбиј
+        </button>
     </form>
-    <a asp-action="RejectApplication" asp-route-id="@Model?.Id" class="btn btn-danger">Одбиј</a>
 </div>
+

@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentDormitoryApp.Domain.DomainModels;
 using StudentDormitoryApp.Repository;
 using StudentDormitoryApp.Service.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace StudentDormitoryApp.Web.Controllers
 {
@@ -58,6 +59,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Name,FilePath,StudentDormitoryId,Id")] Document document)
         {
             if (ModelState.IsValid)

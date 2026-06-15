@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentDormitoryApp.Domain.DomainModels;
 using StudentDormitoryApp.Repository;
 using StudentDormitoryApp.Service.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace StudentDormitoryApp.Web.Controllers
 {
     public class RoomsController : Controller
     {
-        //private readonly ApplicationDbContext _context;
         private readonly IRoomService _roomService;
         private readonly IStudentDormitoryService _studentDormitoryService;
         private readonly IRoomImageService _roomImageService;
@@ -26,12 +26,14 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: Rooms
+        [Authorize]
         public async Task<IActionResult> Index(Guid id)
         {
             return View(_roomService.GetAllByStudentDormitoryId(id));
         }
 
         // GET: Rooms/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -50,6 +52,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: Rooms/Create
+        [Authorize(Roles = "Admin,Referent")]
         public IActionResult Create(Guid? id)
         {
             ViewBag.Orientations= new SelectList(Enum.GetValues<RoomOrientation>());
@@ -68,6 +71,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Referent")]
         public async Task<IActionResult> Create([Bind("Name,BuildingSection,IsDuplex,HasPrivateBathroom,HasKitchen,BedCount,OccupiedBeds,Orientation,StudentDormitoryId,Id")] Room room, List<IFormFile>? Images)
         {
             if (ModelState.IsValid)
@@ -104,6 +108,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: Rooms/Edit/5
+        [Authorize(Roles = "Admin,Referent")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -127,6 +132,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Referent")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Name,BuildingSection,IsDuplex,HasPrivateBathroom,HasKitchen,BedCount,OccupiedBeds,Orientation,StudentDormitoryId,Id")] Room room, List<IFormFile>? Images)
         {
             if (id != room.Id)
@@ -180,6 +186,7 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         // GET: Rooms/Delete/5
+        [Authorize(Roles = "Admin,Referent")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -199,6 +206,7 @@ namespace StudentDormitoryApp.Web.Controllers
         // POST: Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Referent")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var room = _roomService.GetById(id);

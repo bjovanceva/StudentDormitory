@@ -1,6 +1,7 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentDormitoryApp.Domain;
+using System.Diagnostics;
 
 namespace StudentDormitoryApp.Web.Controllers
 {
@@ -12,7 +13,6 @@ namespace StudentDormitoryApp.Web.Controllers
         {
             _logger = logger;
         }
-
         public IActionResult Index()
         {
             return View();

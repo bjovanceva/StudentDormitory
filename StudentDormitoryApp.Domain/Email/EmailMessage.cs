@@ -11,5 +11,7 @@ namespace StudentDormitoryApp.Domain.Email
         public string? MailTo { get; set; }
         public string? Subject { get; set; }
         public string? Content { get; set; }
+        public byte[] Attachment { get; set; }
+        public string AttachmentName { get; set; }
     }
 }

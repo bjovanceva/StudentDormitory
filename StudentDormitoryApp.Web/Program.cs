@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using StudentDormitoryApp.Domain.DomainModels;
 using StudentDormitoryApp.Domain.Email;
 using StudentDormitoryApp.Domain.Identity;
@@ -11,9 +14,18 @@ using StudentDormitoryApp.Service.Interfaces;
 using StudentDormitoryApp.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+DotNetEnv.Env.Load();
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+var baseConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+
+var username = Environment.GetEnvironmentVariable("DB_USERNAME");
+var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+
+var connectionString = $"{baseConnection};Username={username};Password={password}";
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     //options.UseSqlServer(connectionString));
     options.UseNpgsql(connectionString));
@@ -21,8 +33,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddIdentity<StudentDormitoryAppUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
@@ -37,20 +47,22 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<IRoomImageService, RoomImageService>();
 builder.Services.AddTransient<IDocumentService, DocumentService>();
 builder.Services.AddTransient<IApplicationService, ApplicationService>();
+builder.Services.AddTransient<IApplicationPdfService, ApplicationPdfService>();
 
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 
-//builder.Services.ConfigureApplicationCookie(options =>
-//{
-//    options.LoginPath = "/Account/Login";          // redirect here if not logged in
-//    options.AccessDeniedPath = "/Account/AccessDenied"; // redirect here if user lacks role
-//});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
 
-
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
 
 
 var app = builder.Build();
