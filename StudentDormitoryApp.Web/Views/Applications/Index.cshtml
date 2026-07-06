@@ -1,75 +1,67 @@
 ﻿@model IEnumerable<StudentDormitoryApp.Domain.DomainModels.Application>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Апликации";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h3 class="page-heading">Апликации</h3>
 
-@* <p>
-    <a asp-action="Create">Create New</a>
-</p> *@
-<div>
-    <a asp-action="ListWithStatusPending">Непрегледани апликации</a>
-    <a asp-action="ListWithStatusApproved">Прегледани апликации</a>
-    <br />
-    <div>
-        <form method="get" asp-action="GetByMONId">
-        <p>Пребарај според MON идентификатор</p>
-        <input name="search"/>
-        <br />
-
-          
-            <div class="form-group">
-                <input type="submit" value="Пребарај" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <a asp-action="ListWithStatusPending" class="btn btn-outline-secondary">Непрегледани апликации</a>
+    <a asp-action="ListWithStatusApproved" class="btn btn-outline-secondary">Прегледани апликации</a>
 </div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Статус</th>
-            <th>Коментар</th>
-            <th>Датум на апликација</th>
-            <th>Соба</th>
-            <th>Студент</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApplicationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Room.Name)
-            </td>
-          
-                <td>
-                    @if (item.Status == StudentDormitoryApp.Domain.DomainModels.ApplicationStatus.Pending)
-                    {
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">
-                            Прегледај
-                        </a>
-                    }
-                    else
-                    {
-                        <p>
-                            Прегледано
-                        </p>
-                    }
-                    
-                </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<form method="get" asp-action="GetByMONId" class="row g-2 align-items-end mb-4" style="max-width:480px;">
+    <div class="col-8">
+        <label class="form-label mb-1">Пребарај според MON идентификатор</label>
+        <input name="search" class="form-control" placeholder="MON идентификатор" />
+    </div>
+    <div class="col-4">
+        <button type="submit" class="btn btn-brand w-100">Пребарај</button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Статус</th>
+                <th>Коментар</th>
+                <th>Датум на апликација</th>
+                <th>Соба</th>
+                <th class="text-end">Дејство</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @{
+                            var badgeClass = item.Status == StudentDormitoryApp.Domain.DomainModels.ApplicationStatus.Approved
+                            ? "bg-success"
+                            : item.Status == StudentDormitoryApp.Domain.DomainModels.ApplicationStatus.Rejected
+                            ? "bg-danger"
+                            : "bg-secondary";
+                        }
+                        <span class="badge @badgeClass">@Html.DisplayFor(modelItem => item.Status)</span>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Comment)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ApplicationDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
+                    <td class="text-end">
+                        @if (item.Status == StudentDormitoryApp.Domain.DomainModels.ApplicationStatus.Pending)
+                        {
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-success">Прегледај</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Прегледано</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

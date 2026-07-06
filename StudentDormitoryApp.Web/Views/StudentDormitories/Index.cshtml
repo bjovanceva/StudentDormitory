@@ -1,134 +1,52 @@
 ﻿@model IEnumerable<StudentDormitoryApp.Domain.DomainModels.StudentDormitory>
 
 @{
-    ViewData["Title"] = "Student Dormitories";
+    ViewData["Title"] = "Студентски домови";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        background-color: #fffdf5;
-        /* background: url('https://www.kaizenams.com/wp-content/uploads/2021/10/building-maintenance-scaled.jpeg') no-repeat center bottom; */
-        /* background-size: cover;
-        /* font-family: Arial, sans-serif; */
-    } 
+<div class="text-center mb-5 mt-3">
+    <h1 class="page-heading">Студентски домови</h1>
+    <p class="page-subtitle">Избегни ред на чекање. Всели се брзо, лесно и едноставно.</p>
+</div>
 
-    .page-wrapper {
-        position: relative;
-        z-index: 1;
-        padding: 40px 0;
-    }
+<div class="row g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 col-lg-3">
+            <div class="dorm-card">
+                <a asp-action="Index" asp-controller="Rooms" asp-route-id="@item.Id">
+                    @if (!string.IsNullOrEmpty(item.Photo))
+                    {
+                        <img src="@item.Photo" alt="@item.Name" />
+                    }
+                    <div class="dorm-card-body">
+                        <h5>@item.Name</h5>
+                        <p class="dorm-meta"><b>Адреса:</b> @item.Address</p>
+                        <p class="dorm-meta"><b>Соби:</b> @item.RoomCount &nbsp;·&nbsp; <b>Легла:</b> @item.BedCount</p>
+                        <p class="dorm-meta"><b>Месечна станарина:</b> @item.RentPerMonth ден.</p>
 
-
-    .dorm-card {
-        border-radius: 8px;
-        background-color: #ffffffcc; 
-        transition: transform 0.2s ease;
-    }
-
-    .dorm-card:hover {
-        transform: translateY(-4px);
-    }
-
-    .dorm-header {
-        background-color: #198754;
-        color: white;
-        padding: 10px 15px;
-        font-weight: 600;
-        font-size: 16px;
-        border-radius: 8px 8px 0 0;
-    }
-
-    .dorm-info span {
-        font-weight: 600;
-        color: black;
-    }
-
-    .badge {
-        /* padding: 4px 8px; */
-        /* border-radius: 12px; */
-        font-size: 12px;
-    }
-
-    img {
-        border-radius: 4px;
-        width: 200px;
-    }
-</style>
-
-<body>
-    <div class="page-wrapper">
-        <div class="container">
-            <div class="text-center mb-5" style="height: 100px; margin-top: -42px">
-                <h1 style="font-family: 'Playfair Display', serif;" class="fw-bold text-dark">Студентски домови</h1>
-                <p class="fs-5" style="font-family: 'Bangers', cursive; font-size: 3rem; color: black;">
-                    Избегни ред на чекање. Всели се брзо, лесно и едноставно.
-                </p>
-            </div>
-            <div class="row" styl style="padding-top: 5px">
-             
-                @foreach (var item in Model)
-                {
-                    <div class="col-md-3 mb-4">
-                        <div class="card dorm-card h-100" style="position: relative;">
-                            <div class="dorm-header" style="font-family: 'Playfair Display', serif;">@item.Name</div>
-                            <a asp-action="Index" asp-controller="Rooms" asp-route-id="@item.Id" style="text-decoration: none; color: inherit;">
-                            <div class="card-body">
-                                @if (!string.IsNullOrEmpty(item.Photo))
-                                {
-                                    <img src="@item.Photo" class="img-fluid mb-3 d-block mx-auto" style="height:150px; width:343px; object-fit:cover; " />
-                                }
-                                <p class="dorm-info" style="margin-top: -10px"><span style="color: black">Адреса:</span> @item.Address</p>
-                                    <p class="dorm-info" style="margin-top: -10px"><span style="color: black">Соби:</span> @item.RoomCount</p>
-                                    <p class="dorm-info" style="margin-top: -10px"><span style="color: black">Легла:</span> @item.BedCount</p>
-                                    <p class="dorm-info" style="margin-top: -10px"><span style="color: black">Месечна странарина:</span> @item.RentPerMonth ден.</p>
-                                
-
-
-                                    <div class="mt-2 d-flex gap-2 flex-wrap">
-                                        <span class="badge d-flex align-items-center gap-1 px-2 py-1"
-                                              style="background: @(item.HasReadingRoom ? "#d1fae5" : "#f3f4f6");
-                                          color: @(item.HasReadingRoom ? "#065f46" : "#9ca3af");
-                                          border: 1px solid @(item.HasReadingRoom ? "#6ee7b7" : "#e5e7eb");
-                                          font-weight: 500; font-size: 0.72rem; border-radius: 20px;">
-                                            @(item.HasReadingRoom ? "📚" : "—")
-                                            @(item.HasReadingRoom ? "Reading Room" : "No Reading Room")
-                                        </span>
-                                        <span class="badge d-flex align-items-center gap-1 px-2 py-1"
-                                              style="background: @(item.HasCafeteria ? "#d1fae5" : "#f3f4f6");
-                                          color: @(item.HasCafeteria ? "#065f46" : "#9ca3af");
-                                          border: 1px solid @(item.HasCafeteria ? "#6ee7b7" : "#e5e7eb");
-                                          font-weight: 500; font-size: 0.72rem; border-radius: 20px;">
-                                            @(item.HasCafeteria ? "🍽️" : "—")
-                                            @(item.HasCafeteria ? "Cafeteria" : "No Cafeteria")
-                                        </span>
-                                    </div>
-                            </div>
-                            </a>
-
-                            <div class="card-footer bg-white border-0 dorm-actions d-flex gap-2 justify-content-center">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
-                                    Детали
-                                </a>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
-                                    Измени
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary text-danger">
-                                    Избриши
-                                </a>
-                                <a asp-action="Create" asp-controller="Rooms" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary text-success">
-                                    +Соба
-                                </a>
-                            </div>
+                        <div class="d-flex gap-2 flex-wrap mt-2">
+                            <span class="pill @(item.HasReadingRoom ? "pill-on" : "pill-off")">
+                                @(item.HasReadingRoom ? "📚 Читална" : "— Без читална")
+                            </span>
+                            <span class="pill @(item.HasCafeteria ? "pill-on" : "pill-off")">
+                                @(item.HasCafeteria ? "🍽️ Трпезарија" : "— Без трпезарија")
+                            </span>
                         </div>
                     </div>
-                }
+                </a>
+
+                <div class="d-flex gap-2 justify-content-center flex-wrap p-3 pt-0">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Детали</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Измени</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Избриши</a>
+                        <a asp-action="Create" asp-controller="Rooms" asp-route-id="@item.Id" class="btn btn-sm btn-brand">+ Соба</a>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-</body>
+    }
+</div>

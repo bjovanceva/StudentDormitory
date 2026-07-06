@@ -280,7 +280,19 @@
     <div class="action-bar">
         <a asp-action="Index" class="btn-action btn-outline-dark">← Назад</a>
         <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-action btn-outline-dark">Измени</a>
-        <a class="btn-action btn-apply" asp-controller="Applications" asp-route-roomId="@Model?.Id" asp-action="Create">Аплицирај →</a>
+        @{
+            bool isRoomFull = Model != null && Model.OccupiedBeds >= Model.BedCount;
+        }
+        @if (isRoomFull)
+        {
+            <span class="btn-action btn-apply btn-apply-disabled" title="Нема слободни легла во оваа соба" aria-disabled="true">
+                Нема слободни легла
+            </span>
+        }
+        else
+        {
+            <a class="btn-action btn-apply" asp-controller="Applications" asp-route-roomId="@Model?.Id" asp-action="Create">Аплицирај →</a>
+        }
     </div>
 
 </div>

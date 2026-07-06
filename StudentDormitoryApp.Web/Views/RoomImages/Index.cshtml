@@ -1,42 +1,41 @@
 ﻿@model IEnumerable<StudentDormitoryApp.Domain.DomainModels.RoomImage>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Слики од соби";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="page-heading mb-0">Слики од соби</h3>
+    <a asp-action="Create" class="btn btn-brand">+ Додади слика</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Room)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Room.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Преглед</th>
+                <th>@Html.DisplayNameFor(model => model.ImageUrl)</th>
+                <th>Соба</th>
+                <th class="text-end">Дејства</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="width:70px">
+                        <img src="@item.ImageUrl" alt="@item.Room?.Name" style="width:60px;height:45px;object-fit:cover;border-radius:6px;" />
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.ImageUrl)</td>
+                    <td>@item.Room?.Name</td>
+                    <td class="text-end">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Детали</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Измени</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Избриши</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

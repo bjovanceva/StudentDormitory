@@ -10,5 +10,6 @@ namespace StudentDormitoryApp.Service.Interfaces
     public interface IDocumentService
     {
         Document Add(Document document);
+        Document Delete(Document document);
     }
 }

@@ -1,37 +1,30 @@
 ﻿@model StudentDormitoryApp.Domain.DomainModels.Document
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Детали за документ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h3 class="page-heading">Детали за документ</h3>
 
-<div>
-    <h4>Document</h4>
-    <hr />
+<div class="detail-card">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FilePath)</dt>
+        <dd class="col-sm-9">
+            <a href="@Model.FilePath" target="_blank" rel="noopener">
+                <i class="bi bi-box-arrow-up-right"></i> @Html.DisplayFor(model => model.FilePath)
+            </a>
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FilePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FilePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StudentDormitory)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StudentDormitory.Id)
-        </dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StudentDormitory)</dt>
+        <dd class="col-sm-9">@(Model.StudentDormitory?.Name ?? "—")</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <div class="action-row">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-outline-secondary">Измени</a>
+        <a asp-action="Index" class="back-link">← Назад кон листата</a>
+    </div>
 </div>

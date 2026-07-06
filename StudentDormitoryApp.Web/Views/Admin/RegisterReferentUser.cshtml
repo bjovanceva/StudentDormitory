@@ -1,53 +1,63 @@
 ﻿@using StudentDormitoryApp.Domain.DomainModels
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-
 @model StudentDormitoryApp.Domain.DTO.RegisterReferentUser;
 
-<form method="post" asp-action="RegisterReferentUser" asp-controller="Admin">
-    <h2>Регистрирај референт</h2>
-    <hr />
-    <div class="form-floating mb-3">
-        <input type="text" asp-for="FirstName" class="form-control" aria-required="true" placeholder="Јана" />
-        <label asp-for="FirstName" class="form-label">Име</label>
-        <span asp-validation-for="FirstName" class="text-danger"></span>
-    </div>
-    <div class="form-floating mb-3">
-        <input type="text" asp-for="LastName" class="form-control" aria-required="true" placeholder="Јанева" />
-        <label asp-for="LastName" class="form-label">Презиме</label>
-        <span asp-validation-for="LastName" class="text-danger"></span>
-    </div>
-    <div class="form-floating mb-3">
-        <input type="email" asp-for="Email" class="form-control" aria-required="true" placeholder="name@example.com" />
-        <label asp-for="Email" class="form-label">Е-маил адреса</label>
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-floating mb-3">
-        <input type="text" asp-for="Address" class="form-control" aria-required="true" placeholder="Кочани" />
-        <label asp-for="Address" class="form-label">Адреса</label>
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        @* <label asp-for="StudentDormitoryId" class="form-label">Студентски дом</label> *@
-        <select asp-for="StudentDormitoryId" class="form-control" asp-items="@(ViewData["StudentDormitoryId"] as SelectList)">
-            <option value="">Студентски дом</option>
-        </select>
-        <span asp-validation-for="StudentDormitoryId" class="text-danger"></span>
-    </div>
-    <div>
-        <button type="submit" class="w-100 btn btn-lg btn-primary">Регистрирај</button>
-    </div>
-</form>
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+@{
+    ViewData["Title"] = "Регистрирај референт";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success mt-3">
-        @TempData["Message"]
-    </div>
+<h3 class="page-heading">Регистрирај референт</h3>
+<p class="page-subtitle">Внеси ги податоците за новиот референт корисник.</p>
+
+<div class="form-card">
+    <form method="post" asp-action="RegisterReferentUser" asp-controller="Admin">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="FirstName" class="form-label">Име</label>
+            <input type="text" asp-for="FirstName" class="form-control" aria-required="true" placeholder="Јана" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="LastName" class="form-label">Презиме</label>
+            <input type="text" asp-for="LastName" class="form-control" aria-required="true" placeholder="Јанева" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Е-маил адреса</label>
+            <input type="email" asp-for="Email" class="form-control" aria-required="true" placeholder="name@example.com" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label">Адреса</label>
+            <input type="text" asp-for="Address" class="form-control" aria-required="true" placeholder="Кочани" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Студентски дом</label>
+            <select asp-for="StudentDormitoryId" class="form-select" asp-items="@(ViewData["StudentDormitoryId"] as SelectList)">
+                <option value="">-- Одбери студентски дом --</option>
+            </select>
+            <span asp-validation-for="StudentDormitoryId" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-brand">Регистрирај</button>
+        </div>
+    </form>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success mt-3 mb-0">
+            @TempData["Message"]
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

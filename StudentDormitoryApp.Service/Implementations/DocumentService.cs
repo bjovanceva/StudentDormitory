@@ -22,5 +22,9 @@ namespace StudentDormitoryApp.Service.Implementations
             document.Id = Guid.NewGuid();
             return _documentRepository.Insert(document);
         }
+        public Document Delete(Document document)
+        {
+            return _documentRepository.Delete(document);
+        }
     }
 }

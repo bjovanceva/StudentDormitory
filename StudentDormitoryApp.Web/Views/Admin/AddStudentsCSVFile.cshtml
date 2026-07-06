@@ -5,25 +5,26 @@
 }
 
 @{
-    ViewData["Title"] = "Upload Students CSV";
+    ViewData["Title"] = "Внеси студенти";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Upload Students CSV File</h2>
+<h3 class="page-heading">Внеси студенти од CSV датотека</h3>
+<p class="page-subtitle">Прикачи CSV датотека со листа на студенти за да ги додадеш во системот.</p>
 
-<form asp-action="AddStudentsCSVFile" asp-controller="Admin" method="post" enctype="multipart/form-data">
-<div>
-<label for="csvFile">Select CSV File</label>
-<input type="file" name="csvFile" id="csvFile" class="form-control" accept=".csv" 
-               required/>
+<div class="form-card">
+    <form asp-action="AddStudentsCSVFile" asp-controller="Admin" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="csvFile" class="form-label">Одбери CSV датотека</label>
+            <input type="file" name="csvFile" id="csvFile" class="form-control" accept=".csv" required />
+        </div>
+        <button type="submit" class="btn btn-brand">Прикачи</button>
+    </form>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success mt-3">
+            @TempData["Message"]
+        </div>
+    }
 </div>
- <br />
- <button type="submit" class="btn btn-primary"> Upload </button>
-
-</form>
-
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success mt-3">
-        @TempData["Message"]
-    </div>
-}

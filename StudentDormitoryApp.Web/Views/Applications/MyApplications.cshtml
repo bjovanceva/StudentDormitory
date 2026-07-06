@@ -1,0 +1,60 @@
+﻿@model List<StudentDormitoryApp.Domain.DomainModels.Application>
+
+@{
+    ViewData["Title"] = "Мои апликации";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="page-heading">Мои апликации</h3>
+<p class="page-subtitle">Статус на сите апликации кои си ги поднела/поднел.</p>
+
+@if (!Model.Any())
+{
+    <div class="detail-card">
+        <p class="text-muted mb-0">Сеуште немаш поднесено апликација.</p>
+        <a asp-controller="StudentDormitories" asp-action="Index" class="btn btn-brand mt-3">Прегледај студентски домови</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Статус</th>
+                    <th>Студентски дом</th>
+                    <th>Соба</th>
+                    <th>Датум на апликација</th>
+                    <th>Коментар</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                var badgeClass = item.Status == StudentDormitoryApp.Domain.DomainModels.ApplicationStatus.Approved
+                                ? "bg-success"
+                                : item.Status == StudentDormitoryApp.Domain.DomainModels.ApplicationStatus.Rejected
+                                ? "bg-danger"
+                                : "bg-secondary";
+
+                                var statusText = item.Status == StudentDormitoryApp.Domain.DomainModels.ApplicationStatus.Approved
+                                ? "Прифатена"
+                                : item.Status == StudentDormitoryApp.Domain.DomainModels.ApplicationStatus.Rejected
+                                ? "Одбиена"
+                                : "Во исчекување";
+                            }
+                            <span class="badge @badgeClass">@statusText</span>
+                        </td>
+                        <td>@item.Room?.StudentDormitory?.Name</td>
+                        <td>@item.Room?.Name</td>
+                        <td>@item.ApplicationDate</td>
+                        <td>@(string.IsNullOrEmpty(item.Comment) ? "—" : item.Comment)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

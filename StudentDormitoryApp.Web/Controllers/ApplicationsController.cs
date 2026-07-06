@@ -40,6 +40,14 @@ namespace StudentDormitoryApp.Web.Controllers
         }
 
         //GET: Applications
+        [Authorize(Roles = "Student")]
+        public IActionResult MyApplications()
+        {
+            var userId = _userManager.GetUserId(User);
+            var applications = _applicationService.GetAllByUserId(Guid.Parse(userId));
+            return View(applications);
+        }
+
         [Authorize(Roles = "Referent")]
         public IActionResult Index()
         {
@@ -97,6 +105,16 @@ namespace StudentDormitoryApp.Web.Controllers
         // GET: Applications/Create
         public async Task<IActionResult> Create(Guid? roomId)
         {
+            if (roomId == null)
+            {
+                return NotFound();
+            }
+
+            if (!_roomService.isAvailable(roomId.Value))
+            {
+                TempData["Message"] = "Нема слободни легла во оваа соба.";
+                return RedirectToAction("Details", "Rooms", new { id = roomId });
+            }
             var room = _roomService.GetById(roomId.Value);
             ViewData["RoomId"] = roomId;
             ViewData["RoomName"] = room.Name;
@@ -116,8 +134,28 @@ namespace StudentDormitoryApp.Web.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Create([Bind("Comment,RoomId,StudentDormitoryAppUserId,Id")] StudentDormitoryApp.Domain.DomainModels.Application application, List<IFormFile>? Documents)
         {
+            async Task RepopulateViewData()
+            {
+                var roomForView = _roomService.GetById(application.RoomId);
+                ViewData["RoomId"] = application.RoomId;
+                ViewData["RoomName"] = roomForView?.Name;
+                if (roomForView != null)
+                {
+                    ViewData["StudentDormitoryName"] = _studentDormitoryService.GetById(roomForView.StudentDormitoryId).Name;
+                }
+                var currentUserForView = await _userManager.GetUserAsync(User);
+                ViewData["UserEmail"] = currentUserForView?.Email;
+                ViewData["UserId"] = currentUserForView?.Id;
+            }
 
-            if (ModelState.IsValid && Documents!=null)
+            if (Documents == null || Documents.Count == 0 || Documents.All(d => d.Length == 0))
+            {
+                ModelState.AddModelError(string.Empty, "Мора да прикачиш барем еден документ за да поднесеш апликација.");
+                await RepopulateViewData();
+                return View(application);
+            }
+
+            if (ModelState.IsValid)
             {
                 StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY");
 
@@ -136,7 +174,7 @@ namespace StudentDormitoryApp.Web.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long?)((long?)studentDormitory.FirstMonthRent * 100 / 55.2371), 
+                        UnitAmount = (long?)((long?)studentDormitory.FirstMonthRent * 100 / 55.2371),
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -147,8 +185,8 @@ namespace StudentDormitoryApp.Web.Controllers
                 },
             },
                     Mode = "payment",
-                    SuccessUrl = Url.Action("PaymentSuccess", "Applications", new { applicationId = application.Id }, Request.Scheme),
-                    CancelUrl = Url.Action("PaymentCancelled", "Applications", null, Request.Scheme),
+                    SuccessUrl = Url.Action("PaymentSuccess", "Applications", new { applicationId = application.Id }, Request.Scheme) + "&session_id={CHECKOUT_SESSION_ID}",
+                    CancelUrl = Url.Action("PaymentCancelled", "Applications", new { applicationId = application.Id }, Request.Scheme),
                 };
 
                 var service = new SessionService();
@@ -160,9 +198,10 @@ namespace StudentDormitoryApp.Web.Controllers
                 return Redirect(session.Url);
 
             }
+            await RepopulateViewData();
             return View(application);
         }
-  
+
 
         // GET: Applications/Delete/5
         [Authorize]
@@ -184,11 +223,64 @@ namespace StudentDormitoryApp.Web.Controllers
 
         // GET: Applications/PaymentSuccess
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> PaymentSuccess(Guid applicationId)
+        public async Task<IActionResult> PaymentSuccess(Guid applicationId, string session_id)
         {
+            //var currentUser = await _userManager.GetUserAsync(User);
+            //if (currentUser == null)
+            //    return RedirectToAction("Login", "Account");
+
+            //var app = _applicationService.GetById(applicationId);
+            //var pdfBytes = _applicationPdfService.Generate(app);
+
+            //var emailMessage = new EmailMessage
+            //{
+            //    MailTo = currentUser.Email,
+            //    Subject = "Успешна апликација",
+            //    Content = $@"
+            //               <p>Почитуван/а,</p>
+
+            //               <p>Вашата апликација е успешна.</p>
+            //               <p>Ќе добиете повратна информација веднаш по разгледувањето</p>
+            //               <br/>
+            //               <p>Во прилог ви ја испаќаме апликацијата во pdf формат</p>
+
+            //               <p>Со почит,<br/>
+            //               Student Dormitory System</p>",
+            //    Attachment = pdfBytes,
+            //    AttachmentName = "application.pdf"
+            //};
+
+            //await _emailService.SendEmailAsync(emailMessage);
+            //ViewData["applicationId"] = applicationId;
+            //return View();
+
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
                 return RedirectToAction("Login", "Account");
+
+            StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY");
+
+            if (string.IsNullOrEmpty(session_id))
+            {
+                return RedirectToAction("PaymentCancelled", new { applicationId });
+            }
+
+            var sessionService = new SessionService();
+            Session session;
+
+            try
+            {
+                session = sessionService.Get(session_id);
+            }
+            catch (StripeException)
+            {
+                return RedirectToAction("PaymentCancelled", new { applicationId });
+            }
+
+            if (session.PaymentStatus != "paid")
+            {
+                return RedirectToAction("PaymentCancelled", new { applicationId });
+            }
 
             var app = _applicationService.GetById(applicationId);
             var pdfBytes = _applicationPdfService.Generate(app);
@@ -198,15 +290,15 @@ namespace StudentDormitoryApp.Web.Controllers
                 MailTo = currentUser.Email,
                 Subject = "Успешна апликација",
                 Content = $@"
-                           <p>Почитуван/а,</p>
+                   <p>Почитуван/а,</p>
 
-                           <p>Вашата апликација е успешна.</p>
-                           <p>Ќе добиете повратна информација веднаш по разгледувањето</p>
-                           <br/>
-                           <p>Во прилог ви ја испаќаме апликацијата во pdf формат</p>
-                           
-                           <p>Со почит,<br/>
-                           Student Dormitory System</p>",
+                   <p>Вашата апликација е успешна.</p>
+                   <p>Ќе добиете повратна информација веднаш по разгледувањето</p>
+                   <br/>
+                   <p>Во прилог ви ја испаќаме апликацијата во pdf формат</p>
+                   
+                   <p>Со почит,<br/>
+                   Student Dormitory System</p>",
                 Attachment = pdfBytes,
                 AttachmentName = "application.pdf"
             };
@@ -219,10 +311,22 @@ namespace StudentDormitoryApp.Web.Controllers
 
         // GET: Applications/PaymentCancelled
         [Authorize(Roles = "Student")]
-        public IActionResult PaymentCancelled()
+        public IActionResult PaymentCancelled(Guid? applicationId)
+{
+    if (applicationId != null && applicationId != Guid.Empty)
+    {
+        try
         {
-            return View();
+            _applicationService.DeleteById(applicationId.Value);
         }
+        catch (Exception)
+        {
+            // Апликацијата можеби веќе не постои - нема проблем.
+        }
+    }
+
+    return View();
+}
 
         [Authorize(Roles = "Referent")]
         public IActionResult HandleApplication(Guid? id, string Comment, string action)

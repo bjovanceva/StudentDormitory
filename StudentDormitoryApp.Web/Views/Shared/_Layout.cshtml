@@ -1,95 +1,94 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="mk">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - StudentDormitoryApp.Web</title>
+    <title>@ViewData["Title"] - VseliSe</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/StudentDormitoryApp.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light shadow-sm mb-4" style="background-color: white;">
-            <div class="container">
+        <nav class="navbar app-navbar sticky-top">
+            <div class="container d-flex align-items-center justify-content-between">
 
-                <!-- Brand / Logo -->
-                <a class="navbar-brand fw-bold fs-4 text-dark" asp-controller="Home" asp-action="Index">
-                    VseliSe
+                <a class="app-brand" asp-controller="Home" asp-action="Index">
+                    🏠 ВселиСе
                 </a>
 
-                <!-- Mobile toggle button -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#mainNavbar" aria-controls="mainNavbar"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <div class="d-flex align-items-center gap-3">
+                    <partial name="_LoginPartial" />
 
-                <!-- Navigation links -->
-                <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">
-                                Дома
-                            </a>
-                        </li>
-
-                        @if (User.IsInRole("Student"))
-                        {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="StudentDormitories" asp-action="Index">
-                                Студентски домови
-                            </a>
-                        </li>
-                        }
-
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="StudentDormitories" asp-action="Create">
-                                    Додади студентски дом
-                                </a>
-                            </li>
-                        }
-
-                        @if (User.IsInRole("Referent"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Applications" asp-action="Index">
-                                    Апликации
-                                </a>
-                            </li>
-                        }
-
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="AddStudentsCSVFile">
-                                    Додади студенти
-                                </a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="RegisterReferentUser">
-                                    Регистрирај референт
-                                </a>
-                            </li>
-                        }
-
-                    </ul>
-
-                    <!-- Login partial -->
-                    <div class="ms-lg-3">
-                        <partial name="_LoginPartial" />
-                    </div>
+                    <button class="hamburger-btn" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#mainMenu" aria-controls="mainMenu" aria-label="Отвори мени">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+
+    <div class="offcanvas offcanvas-end app-offcanvas" tabindex="-1" id="mainMenu" aria-labelledby="mainMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="mainMenuLabel">Мени</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Затвори"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column gap-1">
+
+            <a class="menu-link" asp-controller="Home" asp-action="Index">🏠 Дома</a>
+
+            @if (User.IsInRole("Student"))
+            {
+                <div class="menu-divider"></div>
+                <div class="menu-section-label">Преглед</div>
+                <a class="menu-link" asp-controller="StudentDormitories" asp-action="Index">🏢 Студентски домови</a>
+                <a class="menu-link" asp-controller="Applications" asp-action="MyApplications">📄 Мои апликации</a>
+            }
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Referent"))
+            {
+                <div class="menu-divider"></div>
+                <div class="menu-section-label">Администрација</div>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="menu-link" asp-controller="StudentDormitories" asp-action="Create">➕ Додади студентски дом</a>
+            }
+
+            @if (User.IsInRole("Referent"))
+            {
+                <a class="menu-link" asp-controller="Applications" asp-action="Index">📋 Апликации</a>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="menu-link" asp-controller="Admin" asp-action="AddStudentsCSVFile">👥 Додади студенти</a>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="menu-link" asp-controller="Admin" asp-action="RegisterReferentUser">🧑‍💼 Регистрирај референт</a>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="menu-divider"></div>
+                <div class="menu-section-label">Преглед</div>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="menu-link" asp-controller="StudentDormitories" asp-action="Index">🏢 Студентски домови</a>
+            }
+
+        </div>
+    </div>
+
+    <div class="container page-container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -97,9 +96,10 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - VseliSe 
+            &copy; 2026 - VseliSe
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

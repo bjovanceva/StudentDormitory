@@ -1,66 +1,55 @@
 ﻿@model IEnumerable<StudentDormitoryApp.Domain.DomainModels.Room>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Преглед на соби";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h3 class="page-heading">Преглед на соби</h3>
+<p class="page-subtitle">Кликни на соба за детали и аплицирање.</p>
 
-<style>
-    .room-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, 80px);
-        gap: 5px;
-    }
-
-    .room-card {
-        width: 80px;
-        height: 80px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 8px;
-        font-weight: bold;
-        text-decoration: none;
-        color: white;
-        text-align: center;
-        transition: transform 0.15s;
-    }
-
-        .room-card:hover {
-            transform: scale(1.05);
-        }
-</style>
-
-<h3>Преглед на соби</h3>
-
-@* <p>
-    <a asp-action="Create">Create New</a>
-</p> *@
-
+<div class="room-legend">
+    <span><span class="legend-dot" style="background:#198754"></span> Слободна</span>
+    <span><span class="legend-dot" style="background:#f5c518"></span> Делумно зафатена</span>
+    <span><span class="legend-dot" style="background:#dc3545"></span> Целосно зафатена</span>
+</div>
 
 <div class="room-grid">
     @foreach (var room in Model)
     {
-        string color = "";
+        string color;
+        bool isFull = room.OccupiedBeds >= room.BedCount;
 
         if (room.OccupiedBeds == 0)
         {
             color = "#198754";
         }
-        else if (room.OccupiedBeds == room.BedCount)
+        else if (isFull)
         {
-            color = "red";
+            color = "#dc3545";
         }
         else
         {
-            color = "yellow";
+            color = "#f5c518";
         }
 
-        <a asp-action="Details" asp-route-id="@room.Id"
-           class="room-card"
-           style="background-color:@color">
-            @room.Name
-        </a>
+        if (isFull)
+        {
+            <span class="room-card room-card-disabled"
+            title="@room.Name — нема слободни легла"
+            style="background-color:@color">
+                @room.Name
+            </span>
+        }
+
+        else
+        {
+             <a asp-action="Details" asp-route-id="@room.Id"
+               class="room-card"
+               style="background-color:@color">
+                @room.Name
+            </a>   
+        }
+        
     }
 </div>

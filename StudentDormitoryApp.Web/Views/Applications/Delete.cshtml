@@ -1,52 +1,33 @@
 ﻿@model StudentDormitoryApp.Domain.DomainModels.Application
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Избриши апликација";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Delete</h1>
+<h3 class="page-heading text-danger">Избриши апликација</h3>
+<p class="page-subtitle">Дали сте сигурни дека сакате да ја избришете оваа апликација?</p>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Application</h4>
-    <hr />
+<div class="detail-card">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Comment)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Comment)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ApplicationDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ApplicationDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Room)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Room.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StudentDormitoryAppUserId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StudentDormitoryAppUserId)
-        </dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Status)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Status)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Comment)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Comment)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ApplicationDate)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.ApplicationDate)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Room)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Room.Name)</dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <div class="action-row">
+            <input type="submit" value="Избриши" class="btn btn-danger" />
+            <a asp-action="Index" class="back-link">← Назад кон листата</a>
+        </div>
     </form>
 </div>

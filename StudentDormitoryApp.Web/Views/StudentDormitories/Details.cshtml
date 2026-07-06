@@ -1,74 +1,39 @@
 ﻿@model StudentDormitoryApp.Domain.DomainModels.StudentDormitory
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Детали за студентски дом";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h3 class="page-heading">@Model.Name</h3>
+<p class="page-subtitle">@Model.Address</p>
 
-<div>
-    <h4>StudentDormitory</h4>
-    <hr />
+<div class="detail-card">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Photo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Photo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RoomCount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RoomCount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BedCount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BedCount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HasReadingRoom)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HasReadingRoom)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HasCafeteria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HasCafeteria)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RentPerMonth)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RentPerMonth)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstMonthRent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstMonthRent)
-        </dd>
-        <p>Documents</p>
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.RoomCount)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.RoomCount)</dd>
+
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.BedCount)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.BedCount)</dd>
+
+        <dt class="col-sm-4">Читална</dt>
+        <dd class="col-sm-8">@(Model.HasReadingRoom ? "Да" : "Не")</dd>
+
+        <dt class="col-sm-4">Трпезарија</dt>
+        <dd class="col-sm-8">@(Model.HasCafeteria ? "Да" : "Не")</dd>
+
+        <dt class="col-sm-4">Месечна станарина</dt>
+        <dd class="col-sm-8">@Model.RentPerMonth ден.</dd>
+
+        <dt class="col-sm-4">Прва месечна станарина</dt>
+        <dd class="col-sm-8">@Model.FirstMonthRent ден.</dd>
+    </dl>
+
+    <div class="mt-3">
+        <p class="fw-semibold mb-1">Документи</p>
         @if (Model.Documents != null && Model.Documents.Any())
         {
-            <ul>
+            <ul class="list-unstyled">
                 @foreach (var doc in Model.Documents)
                 {
                     <li>
@@ -81,11 +46,13 @@
         }
         else
         {
-            <p>Не се потребни документи при вселување</p>
+            <p class="text-muted">Не се потребни документи при вселување</p>
         }
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    </div>
+
+    <div class="action-row">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Измени</a>
+        <a asp-controller="Rooms" asp-action="Index" asp-route-id="@Model.Id" class="btn btn-brand">Погледни соби</a>
+        <a asp-action="Index" class="back-link">← Назад кон листата</a>
+    </div>
 </div>

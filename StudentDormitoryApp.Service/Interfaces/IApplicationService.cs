@@ -15,6 +15,7 @@ namespace StudentDormitoryApp.Service.Interfaces
         List<Application> GetAll();
         List<Application> GetAllWithStatusPending();
         List<Application> GetAllWithStatusApproved();
+        List<Application> GetAllByUserId(Guid userId);
 
         Task<Application> GetByMONApplicationId(String monApplicationId);
         Application DeleteById(Guid id);

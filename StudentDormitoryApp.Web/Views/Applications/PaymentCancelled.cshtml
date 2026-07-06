@@ -1,12 +1,13 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Плаќањето е отфрлено";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <div class="alert alert-success" role="alert">
-        <h4 class="alert-heading">Something went wrong</h4>
-        <p>Your payment has been rejected.</p>
-        <hr>
-	</div>
+<div class="container mt-5" style="max-width:640px;">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Нешто тргна наопаку</h4>
+        <p class="mb-0">Вашето плаќање беше одбиено или прекинато. Апликацијата не е зачувана — можете да пробате повторно.</p>
+    </div>
+
+    <a asp-controller="StudentDormitories" asp-action="Index" class="btn btn-brand">Кон студентски домови</a>
+</div>

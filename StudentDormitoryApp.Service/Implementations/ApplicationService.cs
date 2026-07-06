@@ -37,6 +37,9 @@ namespace StudentDormitoryApp.Service.Implementations
 
             if (Documents != null)
             {
+                var room = _roomService.GetById(application.RoomId);
+                application.Room = room;
+
                 foreach (var file in Documents)
                 {
                     var path = "/documents/" + file.FileName;
@@ -46,8 +49,6 @@ namespace StudentDormitoryApp.Service.Implementations
                         await file.CopyToAsync(stream);
                     }
 
-                    var room = _roomService.GetById(application.RoomId);
-                    application.Room = room;
 
                     var document = new Document
                     {
@@ -58,7 +59,7 @@ namespace StudentDormitoryApp.Service.Implementations
 
                     documents.Add(document);
 
-                    _documentService.Add(document);
+                    //_documentService.Add(document);
                 }
             }
 
@@ -74,6 +75,15 @@ namespace StudentDormitoryApp.Service.Implementations
         public Application DeleteById(Guid id)
         {
             Application application = GetById(id);
+
+            if (application.Documents != null && application.Documents.Any())
+            {
+                foreach (var doc in application.Documents.ToList())
+                {
+                    _documentService.Delete(doc);
+                }
+            }
+
             return _applicationRepository.Delete(application);
         }
 
@@ -90,6 +100,11 @@ namespace StudentDormitoryApp.Service.Implementations
         public List<Application> GetAllWithStatusApproved()
         {
             return _applicationRepository.GetAll(selector: x => x, predicate: x => x.Status.Equals(ApplicationStatus.Approved), include: x => x.Include(y => y.Room).ThenInclude(z => z.StudentDormitory).Include(y => y.StudentDormitoryAppUser)).OrderBy(a => a.ApplicationDate).ToList();
+        }
+
+        public List<Application> GetAllByUserId(Guid userId)
+        {
+            return _applicationRepository.GetAll(selector: x => x, predicate: x => x.StudentDormitoryAppUserId.Equals(userId), include: x => x.Include(y => y.Room).ThenInclude(z => z.StudentDormitory)).OrderByDescending(a => a.ApplicationDate).ToList();
         }
 
         public async Task<Application> GetByMONApplicationId(String monApplicationId)
@@ -109,22 +124,28 @@ namespace StudentDormitoryApp.Service.Implementations
             application.Status = ApplicationStatus.Approved;
             _applicationRepository.Update(application);
 
-            var user = await _userManager.FindByIdAsync(application.StudentDormitoryAppUserId.ToString());
-      
-
-            var emailMessage = new EmailMessage
-            {
-                MailTo = user.Email,
-                Subject = "Информација за статус на поднесената апликација",
-                Content = comment
-            };
-
-            await _emailService.SendEmailAsync(emailMessage);
-
             var room = _roomService.GetById(application.RoomId);
             room.OccupiedBeds += 1;
             _roomService.Update(room);
-        
+
+            var user = await _userManager.FindByIdAsync(application.StudentDormitoryAppUserId.ToString());
+
+            try
+            {
+                var emailMessage = new EmailMessage
+                {
+                    MailTo = user.Email,
+                    Subject = "Информација за статус на поднесената апликација",
+                    Content = comment
+                };
+
+                await _emailService.SendEmailAsync(emailMessage);
+            }
+            catch (Exception)
+            {
+                // Проблем со email не смее да го спречи веќе завршеното одобрување/ажурирање на собата.
+            }
+
             return application;
         }
 
@@ -136,15 +157,21 @@ namespace StudentDormitoryApp.Service.Implementations
 
             var user = await _userManager.FindByIdAsync(application.StudentDormitoryAppUserId.ToString());
 
-
-            var emailMessage = new EmailMessage
+            try
             {
-                MailTo = user.Email,
-                Subject = "Информација за статус на поднесената апликација",
-                Content = comment
-            };
+                var emailMessage = new EmailMessage
+                {
+                    MailTo = user.Email,
+                    Subject = "Информација за статус на поднесената апликација",
+                    Content = comment
+                };
 
-            await _emailService.SendEmailAsync(emailMessage);
+                await _emailService.SendEmailAsync(emailMessage);
+            }
+            catch (Exception)
+            {
+                // Отфрлањето веќе е зачувано - проблем со email не смее да прикаже грешка.
+            }
 
             return application;
         }
