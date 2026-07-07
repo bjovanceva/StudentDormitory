@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "provider": "dotnet",
+  "steps": {
+    "build": {
+      "commands": [
+        "dotnet publish StudentDormitoryApp.Web/StudentDormitoryApp.Web.csproj -c Release -o out"
+      ]
+    }
+  },
+  "deploy": {
+    "startCommand": "dotnet out/StudentDormitoryApp.Web.dll"
+  }
+}
