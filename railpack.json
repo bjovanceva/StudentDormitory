@@ -1,5 +1,0 @@
-{
-  "$schema": "https://railpack.com/schema.json",
-  "provider": "dotnet",
-  "project": "StudentDormitoryApp.Web/StudentDormitoryApp.Web.csproj"
-}
