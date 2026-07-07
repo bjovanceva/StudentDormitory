@@ -2,6 +2,11 @@
   "$schema": "https://schema.railpack.com",
   "provider": "dotnet",
   "steps": {
+    "install": {
+      "commands": [
+        "dotnet restore StudentDormitoryApp.Web/StudentDormitoryApp.Web.csproj"
+      ]
+    },
     "build": {
       "commands": [
         "dotnet publish StudentDormitoryApp.Web/StudentDormitoryApp.Web.csproj -c Release -o out"
